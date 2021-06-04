@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+    body{
+    background-color: burlywood;
+}
+
+.main_div{
+    background-color: antiquewhite;
+    width: 800px;
+    position: relative;
+    top: 100px;
+    left: 350px;
+    padding: 20px
+}
+
+h3{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+p{
+    width: 60px;
+    height: 60px;
+    background-color: orange;
+    text-align: center;
+    font-size: 45px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-left: 25px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input{
+    margin-left: 17px;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+    font-size: 30px;
+}
+
+.play{
+    margin-top: 30px;
+}
+
+.oyna{
+    width: 150px;
+    font-size: 25px;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    border: 1px solid green;
+    border-radius: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.oyna:hover{
+    cursor: pointer;
+}
+
+.reset{
+    width: 150px;
+    font-size: 25px;
+    padding: 10px;
+    background-color: rgb(217, 228, 65);
+    color: rgb(0, 0, 0);
+    border: 1px solid rgb(217, 228, 65);
+    border-radius: 10px;
+}
+.reset:hover{
+    cursor: pointer;
+}
+
+.labels{
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+label{
+    margin-left: 35px;
+    margin-right: 28px;
+    font-size: 25px;
+}
+
+#skor{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#hediye{
+    font-family: Arial, Helvetica, sans-serif;
+    position: relative;
+    left: 350px;
+    top: 10px
+}
+
+.sayilar{
+    margin-left: 240px;
+}
+
+span{
+    position: relative;
+    top: 90px;
+    left: 10px;
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+</style>
+
+</head>
+<body>
+    <div class="main_div">
+        <div>
+            <h3>Oynamak İçin 1-30 Arasında 6 Adet Sayı Giriniz</h3>
+        </div>
+    <div class="inputs">
+        <input id="i1" type="number" min="1" max="30" oninput="maxLengthCheck(this)" maxlength = "2">
+        <input id="i2" type="number" min="1" max="30" oninput="maxLengthCheck(this)" maxlength = "2">
+        <input id="i3" type="number" min="1" max="30" oninput="maxLengthCheck(this)" maxlength = "2">
+        <input id="i4" type="number" min="1" max="30" oninput="maxLengthCheck(this)" maxlength = "2">
+        <input id="i5" type="number" min="1" max="30" oninput="maxLengthCheck(this)" maxlength = "2">
+        <input id="i6" type="number" min="1" max="30" oninput="maxLengthCheck(this)" maxlength = "2">
+        
+    </div>
+    <div class="labels">
+        <label >Sayı 1</label>
+        <label >Sayı 2</label>
+        <label >Sayı 3</label>
+        <label >Sayı 4</label>
+        <label >Sayı 5</label>
+        <label >Sayı 6</label>
+    </div>
+
+    <div class="play">
+    <button id="oyna" class="oyna" onclick="kontrol()">OYNA</button>
+    <button id="reset" class="reset" onclick="reset()" >SIFIRLA</button>
+    <label id="skor"></label>
+    <label id="hediye"></label>
+    </div>
+    
+    <span>Şanslı Numaralar: </span>
+    
+    <div class="sayilar">
+        <p id="s1"></p>
+        <p id="s2"></p>
+        <p id="s3"></p>
+        <p id="s4"></p>
+        <p id="s5"></p>
+        <p id="s6"></p>
+    </div>
+</div>
+
+</body>
+<script>
+    var i1 = document.getElementById('i1');
+var i2 = document.getElementById('i2');
+var i3 = document.getElementById('i3');
+var i4 = document.getElementById('i4');
+var i5 = document.getElementById('i5');
+var i6 = document.getElementById('i6');  // Input
+var inputs = [i1,i2,i3,i4,i5,i6];
+
+var oyna = document.getElementById('oyna');
+var labelHediye = document.getElementById('hediye');
+var labelSkor = document.getElementById('skor');
+
+var toplar=[];
+
+var s1 = document.getElementById('s1');
+var s2 = document.getElementById('s2');
+var s3 = document.getElementById('s3');
+var s4 = document.getElementById('s4');
+var s5 = document.getElementById('s5');
+var s6 = document.getElementById('s6');
+var sayilar = [s1,s2,s3,s4,s5,s6];  // Random
+
+function kontrol(){
+    
+    if(k1_30()==0){ // Uygun Sayılar Girildiyse
+        if(k_esitlik() != -1){ // Sayılar Aynı Değilse
+            sonuclar();
+        }
+        else{
+          alert('Sayılar Birbirinden Farklı Olmalı\nYeniden Oynamak İçin Sıfırlayınız')
+        }
+      }
+  oyna.disabled = true; oyna.style.backgroundColor = 'red';
+  oyna.style.border = '1px solid red';
+}
+
+function randomSayi(max, sayiAdedi) {
+   
+  let dizi = []
+  for (let i = 1; i <= max; i++) {
+    dizi.push(i) // 30 değerli bir dizi oluşturdu [1-30]
+  }
+
+  let sonuclar = [];
+
+  for (let i = 1; i <= sayiAdedi; i++) {
+    const random = Math.floor(Math.random() * (max - i));
+    sonuclar.push(dizi[random]);
+    dizi[random] = dizi[max - i];
+  }
+  return sonuclar;
+}
+
+  function sonuclar(){
+    var sayac=0;
+    toplar = randomSayi(30,6);
+  while(sayac < 6){	
+      sayilar[sayac].innerHTML = toplar[sayac];
+      sayac++
+  }
+  skor();
+  }
+
+function skor(){
+    var skor = 0;
+    for(var i=0;i<6;i++){
+        for(var j =0;j<6;j++){
+            if(toplar[i]== Number(inputs[j].value)){
+                skor = skor +1
+                inputs[j].style.backgroundColor = 'green';
+                inputs[j].style.border = '1px solid green';
+                inputs[j].style.color = 'white';
+  }}}
+    if(skor>0){
+      alert('Tebrikler Kazandınız\nYeniden Oynamak İçin Sıfırlayınız')
+      labelSkor.innerHTML = 'Doğru Tahmin Sayısı: ' + skor 
+    }
+    else{
+      alert('Maalesef Kaybettiniz\nYeniden Oynamak İçin Sıfırlayınız ')
+      labelSkor.innerHTML = 'Maalesef Kaybettiniz'
+    }  
+    hediye(skor); 
+}
+
+function reset(){
+  for(var a=0; a<inputs.length; a++){
+    inputs[a].style.backgroundColor = 'white';
+    inputs[a].value = ''
+    sayilar[a].innerHTML = ''
+    inputs[a].style.border = '1px solid black';
+    inputs[a].style.color = 'black';
+  }
+  labelHediye.innerHTML = '';
+  labelSkor.innerHTML = ''
+  oyna.disabled = false;
+  oyna.style.backgroundColor = 'green';
+  oyna.style.border = '1px solid green';
+}
+
+function hediye(x){
+switch(x){
+   
+  case 1: 
+    labelHediye.innerHTML = 'Ödülünüz: Kitap Seti'
+      break;
+
+  case 2:
+    labelHediye.innerHTML = 'Ödülünüz: Bluetooth Kulaklık'
+      break;
+  
+  case 3:
+    labelHediye.innerHTML = 'Ödülünüz: Akıllı Saat'
+      break;
+  
+  case 4:
+    labelHediye.innerHTML = 'Ödülünüz: Cep Telefonu'
+      break;
+  
+  case 5:
+    labelHediye.innerHTML = 'Ödülünüz: Playstation 5'
+      break;
+    
+  case 6:
+    labelHediye.innerHTML = 'Ödülünüz: Oyun Bilgisayarı'
+      break;
+}
+}
+
+function k1_30(){
+  for(var i=0; i<inputs.length; i++){
+    if(inputs[i].value<1 || inputs[i].value>30){
+      inputs[i].style.backgroundColor = 'red';
+      inputs[i].style.border = '1px solid red';
+    }
+  }
+  var sayac = 0;
+  for(var j=0; j<inputs.length; j++){
+    if(inputs[j].style.backgroundColor == 'red'){
+      sayac++;
+    }
+}
+  if(sayac>0){
+    alert(sayac + ' Adet Sayı Belirtilen Aralıkta Değil\nYeniden Oynamak İçin Sıfırlayınız')
+    return -1;
+  }
+  else{return 0;}}
+
+function k_esitlik(){
+  var sayac2 = 0;
+  zero();
+  for(var i=0; i<inputs.length-1; i++){
+    for(var j=i+1; j<inputs.length; j++){
+      if(inputs[i].value == inputs[j].value || arrzero[i] == inputs[j].value){
+        inputs[i].style.backgroundColor = 'red';
+        inputs[i].style.border = '1px solid red';
+        inputs[j].style.backgroundColor = 'red';
+        inputs[j].style.border = '1px solid red';
+        sayac2 = -1;
+      }
+    }
+  }
+  return sayac2;
+ }
+
+ var arrzero = [];
+ function zero(){
+    for(var i=0; i<inputs.length; i++){
+      arrzero[i] = parseInt(inputs[i].value,10);
+    }
+ }
+
+ function maxLengthCheck(object)
+  {
+    if (object.value.length > object.maxLength)
+      object.value = object.value.slice(0, object.maxLength)
+  }
+</script>
+</html>
